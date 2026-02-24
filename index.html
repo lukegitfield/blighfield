@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Blighfield Collection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Neue+Haas+Grotesk+Display+Pro:wght@400;500&family=DM+Mono:wght@300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --gallery-white: #f5f2ee;
+      --wall-color: #eee9e2;
+      --baseboard: #d8d0c5;
+      --text-dark: #1a1814;
+      --text-mid: #5a564f;
+      --text-light: #9a9389;
+      --accent: #b8a898;
+      --shadow-soft: rgba(0,0,0,0.08);
+      --shadow-med: rgba(0,0,0,0.16);
+      --shadow-deep: rgba(0,0,0,0.28);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--wall-color);
+      color: var(--text-dark);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Subtle wall texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header */
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 60px 60px 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--baseboard);
+      padding-bottom: 28px;
+    }
+
+    .header-left h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      letter-spacing: 0.04em;
+      color: var(--text-dark);
+      line-height: 1;
+    }
+
+    .header-left h1 span {
+      font-style: italic;
+      color: var(--text-mid);
+    }
+
+    .header-right {
+      text-align: right;
+    }
+
+    /* Navigation strip */
+    nav {
+      position: relative;
+      z-index: 10;
+      padding: 16px 60px;
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    nav a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--text-dark);
+    }
+
+    nav .divider {
+      width: 1px;
+      height: 12px;
+      background: var(--baseboard);
+    }
+
+    /* Gallery room */
+    .gallery-room {
+      position: relative;
+      z-index: 1;
+      padding: 80px 60px 120px;
+    }
+
+    /* Masonry grid */
+    .gallery-grid {
+      columns: 3;
+      column-gap: 60px;
+    }
+
+    @media (max-width: 1100px) {
+      .gallery-grid { columns: 2; column-gap: 40px; }
+      header, nav, .gallery-room { padding-left: 40px; padding-right: 40px; }
+    }
+
+    @media (max-width: 680px) {
+      .gallery-grid { columns: 1; }
+      header, nav, .gallery-room { padding-left: 24px; padding-right: 24px; }
+      header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .header-right { text-align: left; }
+    }
+
+    /* Artwork card */
+    .artwork {
+      break-inside: avoid;
+      margin-bottom: 60px;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    .artwork:nth-child(1)  { animation-delay: 0.05s; }
+    .artwork:nth-child(2)  { animation-delay: 0.12s; }
+    .artwork:nth-child(3)  { animation-delay: 0.19s; }
+    .artwork:nth-child(4)  { animation-delay: 0.26s; }
+    .artwork:nth-child(5)  { animation-delay: 0.33s; }
+    .artwork:nth-child(6)  { animation-delay: 0.40s; }
+    .artwork:nth-child(7)  { animation-delay: 0.47s; }
+    .artwork:nth-child(8)  { animation-delay: 0.54s; }
+    .artwork:nth-child(9)  { animation-delay: 0.61s; }
+    .artwork:nth-child(10) { animation-delay: 0.68s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* The frame + image */
+    .frame-outer {
+      position: relative;
+      cursor: zoom-in;
+    }
+
+    .frame-mat {
+      background: #fff;
+      padding: 12px;
+      box-shadow:
+        0 2px 4px var(--shadow-soft),
+        0 8px 24px var(--shadow-med),
+        0 20px 60px var(--shadow-deep),
+        inset 0 0 0 1px rgba(0,0,0,0.06);
+      transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .frame-outer:hover .frame-mat {
+      transform: translateY(-4px) scale(1.008);
+      box-shadow:
+        0 4px 8px var(--shadow-soft),
+        0 16px 40px var(--shadow-med),
+        0 40px 80px var(--shadow-deep),
+        inset 0 0 0 1px rgba(0,0,0,0.06);
+    }
+
+    /* Frame edge simulation */
+    .frame-mat::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 6px solid transparent;
+      border-image: linear-gradient(
+        145deg,
+        #c8b89a 0%,
+        #e8d8c0 25%,
+        #b8a880 50%,
+        #d8c8a8 75%,
+        #c0b090 100%
+      ) 1;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Some artworks get a darker, chunkier frame */
+    .artwork.dark-frame .frame-mat::before {
+      border-image: linear-gradient(
+        145deg,
+        #3a3530 0%,
+        #5a5248 25%,
+        #2a2520 50%,
+        #4a4238 75%,
+        #3a3228 100%
+      ) 1;
+    }
+
+    .artwork.dark-frame .frame-mat {
+      padding: 16px;
+    }
+
+    .frame-mat img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    /* Label */
+    .artwork-label {
+      margin-top: 18px;
+      padding-left: 2px;
+      position: relative;
+    }
+
+    .artwork-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      color: var(--text-light);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .artwork-artist {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text-dark);
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+    }
+
+    .artwork-artist a {
+      color: var(--text-dark);
+      text-decoration: none;
+      border-bottom: 1px solid var(--baseboard);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .artwork-artist a:hover {
+      color: var(--text-mid);
+      border-color: var(--text-mid);
+    }
+
+    .artwork-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-mid);
+      margin-top: 2px;
+      letter-spacing: 0.01em;
+    }
+
+    /* Label accent line */
+    .artwork-label::before {
+      content: '';
+      position: absolute;
+      left: -14px;
+      top: 4px;
+      bottom: 4px;
+      width: 1px;
+      background: var(--baseboard);
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(20, 18, 15, 0.94);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .lightbox-inner {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: scale(0.96);
+      transition: transform 0.3s ease;
+    }
+
+    .lightbox.active .lightbox-inner {
+      transform: scale(1);
+    }
+
+    .lightbox-inner img {
+      max-width: 90vw;
+      max-height: 80vh;
+      object-fit: contain;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+    }
+
+    .lightbox-caption {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .lightbox-caption .lb-artist {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.04em;
+    }
+
+    .lightbox-caption .lb-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.55);
+      margin-top: 4px;
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 32px;
+      right: 40px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lightbox-close:hover { color: rgba(255,255,255,0.9); }
+
+    .lightbox-close::before {
+      content: '✕';
+      font-size: 1rem;
+    }
+
+    .lightbox-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.6);
+      font-size: 1.4rem;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: serif;
+    }
+
+    .lightbox-nav:hover {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.9);
+    }
+
+    .lightbox-prev { left: 32px; }
+    .lightbox-next { right: 32px; }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid var(--baseboard);
+      padding: 32px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: var(--text-light);
+      text-transform: uppercase;
+    }
+
+    footer a {
+      color: var(--text-light);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--text-dark); }
+
+    @media (max-width: 680px) {
+      footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <h1>The Blighfield <span>Collection</span></h1>
+    </div>
+
+  </header>
+
+  <nav>
+    <a href="https://blighfield.com">blighfield.com</a>
+    <div class="divider"></div>
+    <a href="#" onclick="return false;">Mixed media</a>
+    <div class="divider"></div>
+    <a href="#" onclick="return false;">Private collection</a>
+  </nav>
+
+  <main class="gallery-room">
+    <div class="gallery-grid" id="gallery">
+
+      <div class="artwork" data-index="0">
+        <div class="frame-outer" onclick="openLightbox(0)">
+          <div class="frame-mat">
+            <img src="image1.jpg" alt="Club de fans de W. Anderson by Alexander Grahovsky" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 01</div>
+          <div class="artwork-artist"><a href="https://alexandergrahovsky.com" target="_blank" rel="noopener">Alexander Grahovsky</a></div>
+          <div class="artwork-title">Club de fans de W. Anderson</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="1">
+        <div class="frame-outer" onclick="openLightbox(1)">
+          <div class="frame-mat dark-frame" style="padding:0;">
+            <img src="image2.jpg" alt="Untitled by David Horgan" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 02</div>
+          <div class="artwork-artist"><a href="https://www.davidhorganart.com" target="_blank" rel="noopener">David Horgan</a></div>
+          <div class="artwork-title">untitled</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="2">
+        <div class="frame-outer" onclick="openLightbox(2)">
+          <div class="frame-mat">
+            <img src="image3.jpg" alt="Please give me my dinner by Errol Theunissen" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 03</div>
+          <div class="artwork-artist"><a href="https://erroltheunissenfineart.com" target="_blank" rel="noopener">Errol Theunissen</a></div>
+          <div class="artwork-title">Please give me my dinner</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="3">
+        <div class="frame-outer" onclick="openLightbox(3)">
+          <div class="frame-mat">
+            <img src="image4.webp" alt="The Visitor by Errol Theunissen" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 04</div>
+          <div class="artwork-artist"><a href="https://erroltheunissenfineart.com" target="_blank" rel="noopener">Errol Theunissen</a></div>
+          <div class="artwork-title">The Visitor</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="4">
+        <div class="frame-outer" onclick="openLightbox(4)">
+          <div class="frame-mat dark-frame" style="padding:0;">
+            <img src="image5.jpg" alt="Boys Don't Cry by Euan Roberts" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 05</div>
+          <div class="artwork-artist"><a href="https://www.euanrobertsart.com" target="_blank" rel="noopener">Euan Roberts</a></div>
+          <div class="artwork-title">Boys Don't Cry</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="5">
+        <div class="frame-outer" onclick="openLightbox(5)">
+          <div class="frame-mat" style="background:#111; padding:0;">
+            <img src="image6.png" alt="Snowy Mountains by Unknown artist" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 06</div>
+          <div class="artwork-artist">Unknown artist</div>
+          <div class="artwork-title">Snowy Mountains</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="6">
+        <div class="frame-outer" onclick="openLightbox(6)">
+          <div class="frame-mat">
+            <img src="image7.jpg" alt="Fracture by Luke Maund" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 07</div>
+          <div class="artwork-artist"><a href="https://www.lukemaund.com" target="_blank" rel="noopener">Luke Maund</a></div>
+          <div class="artwork-title">Fracture</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="7">
+        <div class="frame-outer" onclick="openLightbox(7)">
+          <div class="frame-mat" style="background:#f8f4f0; padding:0;">
+            <img src="image8.png" alt="Sr. Fresa by Mark Malarko" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 08</div>
+          <div class="artwork-artist"><a href="https://editions.malarko.com" target="_blank" rel="noopener">Mark Malarko</a></div>
+          <div class="artwork-title">Sr. Fresa</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="8">
+        <div class="frame-outer" onclick="openLightbox(8)">
+          <div class="frame-mat">
+            <img src="image9.webp" alt="Pont Aven (Laurent) by Samantha Kerdine" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 09</div>
+          <div class="artwork-artist"><a href="https://www.samanthakerdine.fr" target="_blank" rel="noopener">Samantha Kerdine</a></div>
+          <div class="artwork-title">Pont Aven (Laurent)</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="9">
+        <div class="frame-outer" onclick="openLightbox(9)">
+          <div class="frame-mat">
+            <img src="image10.jpg" alt="Cowboy 1 by Trevor Small" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 10</div>
+          <div class="artwork-artist">Trevor Small</div>
+          <div class="artwork-title">Cowboy 1</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; The Blighfield Collection — <a href="https://blighfield.com">blighfield.com</a></p>
+    <p>All works are privately held</p>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="handleLightboxClick(event)">
+    <button class="lightbox-close" onclick="closeLightbox()">Close</button>
+    <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1, event)">&#8592;</button>
+    <button class="lightbox-nav lightbox-next" onclick="navLightbox(1, event)">&#8594;</button>
+    <div class="lightbox-inner">
+      <img id="lightbox-img" src="" alt="">
+      <div class="lightbox-caption">
+        <div class="lb-artist" id="lb-artist"></div>
+        <div class="lb-title" id="lb-title"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const artworks = [
+      { src: 'image1.jpg',   artist: 'Alexander Grahovsky', title: 'Club de fans de W. Anderson' },
+      { src: 'image2.jpg',   artist: 'David Horgan',        title: 'untitled' },
+      { src: 'image3.jpg',   artist: 'Errol Theunissen',    title: 'Please give me my dinner' },
+      { src: 'image4.webp',  artist: 'Errol Theunissen',    title: 'The Visitor' },
+      { src: 'image5.jpg',   artist: 'Euan Roberts',        title: "Boys Don't Cry" },
+      { src: 'image6.png',   artist: 'Unknown artist',      title: 'Snowy Mountains' },
+      { src: 'image7.jpg',   artist: 'Luke Maund',          title: 'Fracture' },
+      { src: 'image8.png',   artist: 'Mark Malarko',        title: 'Sr. Fresa' },
+      { src: 'image9.webp',  artist: 'Samantha Kerdine',    title: 'Pont Aven (Laurent)' },
+      { src: 'image10.jpg',  artist: 'Trevor Small',        title: 'Cowboy 1' },
+    ];
+
+    let current = 0;
+
+    function openLightbox(index) {
+      current = index;
+      updateLightbox();
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function updateLightbox() {
+      const a = artworks[current];
+      document.getElementById('lightbox-img').src = a.src;
+      document.getElementById('lightbox-img').alt = a.title;
+      document.getElementById('lb-artist').textContent = a.artist;
+      document.getElementById('lb-title').textContent = a.title;
+    }
+
+    function navLightbox(dir, e) {
+      e && e.stopPropagation();
+      current = (current + dir + artworks.length) % artworks.length;
+      updateLightbox();
+    }
+
+    function handleLightboxClick(e) {
+      if (e.target === document.getElementById('lightbox')) closeLightbox();
+    }
+
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('lightbox').classList.contains('active')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') navLightbox(-1);
+      if (e.key === 'ArrowRight') navLightbox(1);
+    });
+  </script>
+
+</body>
+</html>
