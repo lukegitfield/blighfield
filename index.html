@@ -152,6 +152,9 @@
     .artwork:nth-child(8)  { animation-delay: 0.54s; }
     .artwork:nth-child(9)  { animation-delay: 0.61s; }
     .artwork:nth-child(10) { animation-delay: 0.68s; }
+    .artwork:nth-child(11) { animation-delay: 0.75s; }
+    .artwork:nth-child(12) { animation-delay: 0.82s; }
+    .artwork:nth-child(13) { animation-delay: 0.89s; }
 
     @keyframes fadeUp {
       to { opacity: 1; transform: translateY(0); }
@@ -433,18 +436,11 @@
 
   <header>
     <div class="header-left">
-      <h1><span>The</span> Blighfield <span>Collection</span></h1>
+      <h1>The Blighfield <span>Collection</span></h1>
     </div>
 
   </header>
 
-  <nav>
-    <h3>Blighfield Inc.</h3>
-    <div class="divider"></div>
-    <h3>Mixed media</h3>
-    <div class="divider"></div>
-    <h3>Private collection</h3>
-  </nav>
 
   <main class="gallery-room">
     <div class="gallery-grid" id="gallery">
@@ -491,7 +487,7 @@
       <div class="artwork" data-index="3">
         <div class="frame-outer" onclick="openLightbox(3)">
           <div class="frame-mat">
-            <img src="image4.jpg" alt="The Visitor by Errol Theunissen" loading="lazy">
+            <img src="image4.webp" alt="The Visitor by Errol Theunissen" loading="lazy">
           </div>
         </div>
         <div class="artwork-label">
@@ -517,7 +513,7 @@
       <div class="artwork" data-index="5">
         <div class="frame-outer" onclick="openLightbox(5)">
           <div class="frame-mat" style="background:#111; padding:0;">
-            <img src="image6.jpg" alt="Snowy Mountains by Unknown artist" loading="lazy">
+            <img src="image6.png" alt="Snowy Mountains by Unknown artist" loading="lazy">
           </div>
         </div>
         <div class="artwork-label">
@@ -543,7 +539,7 @@
       <div class="artwork" data-index="7">
         <div class="frame-outer" onclick="openLightbox(7)">
           <div class="frame-mat" style="background:#f8f4f0; padding:0;">
-            <img src="image8.jpg" alt="Sr. Fresa by Mark Malarko" loading="lazy">
+            <img src="image8.png" alt="Sr. Fresa by Mark Malarko" loading="lazy">
           </div>
         </div>
         <div class="artwork-label">
@@ -556,7 +552,7 @@
       <div class="artwork" data-index="8">
         <div class="frame-outer" onclick="openLightbox(8)">
           <div class="frame-mat">
-            <img src="image9.webp" alt="Pont Aven (Laurent) by Samantha Kerdine" loading="lazy">
+            <img src="image9.png" alt="Pont Aven (Laurent) by Samantha Kerdine" loading="lazy">
           </div>
         </div>
         <div class="artwork-label">
@@ -576,6 +572,45 @@
           <div class="artwork-number">No. 10</div>
           <div class="artwork-artist">Trevor Small</div>
           <div class="artwork-title">Cowboy 1</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="10">
+        <div class="frame-outer" onclick="openLightbox(10)">
+          <div class="frame-mat">
+            <img src="image11.png" alt="Untitled by Marija Tiurina" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 11</div>
+          <div class="artwork-artist"><a href="https://marijatiurina.com" target="_blank" rel="noopener">Marija Tiurina</a></div>
+          <div class="artwork-title">untitled</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="11">
+        <div class="frame-outer" onclick="openLightbox(11)">
+          <div class="frame-mat">
+            <img src="image12.png" alt="Hyko by Riccardo Solesin" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 12</div>
+          <div class="artwork-artist"><a href="https://www.instagram.com/riki.myart/" target="_blank" rel="noopener">Riccardo Solesin</a></div>
+          <div class="artwork-title">Hyko</div>
+        </div>
+      </div>
+
+      <div class="artwork" data-index="12">
+        <div class="frame-outer" onclick="openLightbox(12)">
+          <div class="frame-mat">
+            <img src="image13.png" alt="Untitled by Unknown artist" loading="lazy">
+          </div>
+        </div>
+        <div class="artwork-label">
+          <div class="artwork-number">No. 13</div>
+          <div class="artwork-artist">Unknown artist</div>
+          <div class="artwork-title">untitled</div>
         </div>
       </div>
 
@@ -606,13 +641,16 @@
       { src: 'image1.jpg',   artist: 'Alexander Grahovsky', title: 'Club de fans de W. Anderson' },
       { src: 'image2.jpg',   artist: 'David Horgan',        title: 'untitled' },
       { src: 'image3.jpg',   artist: 'Errol Theunissen',    title: 'Please give me my dinner' },
-      { src: 'image4.jpg',  artist: 'Errol Theunissen',    title: 'The Visitor' },
+      { src: 'image4.webp',  artist: 'Errol Theunissen',    title: 'The Visitor' },
       { src: 'image5.jpg',   artist: 'Euan Roberts',        title: "Boys Don't Cry" },
-      { src: 'image6.jpg',   artist: 'Unknown artist',      title: 'Snowy Mountains' },
+      { src: 'image6.png',   artist: 'Unknown artist',      title: 'Snowy Mountains' },
       { src: 'image7.jpg',   artist: 'Luke Maund',          title: 'Fracture' },
-      { src: 'image8.jpg',   artist: 'Mark Malarko',        title: 'Sr. Fresa' },
-      { src: 'image9.jpg',  artist: 'Samantha Kerdine',    title: 'Pont Aven (Laurent)' },
+      { src: 'image8.png',   artist: 'Mark Malarko',        title: 'Sr. Fresa' },
+      { src: 'image9.png',  artist: 'Samantha Kerdine',    title: 'Pont Aven (Laurent)' },
       { src: 'image10.jpg',  artist: 'Trevor Small',        title: 'Cowboy 1' },
+      { src: 'image11.png',  artist: 'Marija Tiurina',      title: 'untitled' },
+      { src: 'image12.png',  artist: 'Riccardo Solesin',    title: 'Hyko' },
+      { src: 'image13.png',  artist: 'Unknown artist',      title: 'untitled' },
     ];
 
     let current = 0;
